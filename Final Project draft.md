@@ -9,13 +9,16 @@
 
 This project initially selected BERT as the pre-trained model and fine-tuned it to perform a text classification task. Inspired by recent advancements in open-source large language models (LLMs), the project aimed to enhance accessibility for a broader audience, including non-professionals, by implementing real-time deployment of the fine-tuned model. Additionally, to improve inference speed and reduce resource consumption, the project incorporated model distillation to optimize deployment efficiency.
 
-The three key objectives of this project can be summarized as follows:
+The primary goals of the project were as follows:
 
-Fine-tune the BERT model for text classification tasks.
+1. **Fine-tune BERT for Text Classification**  
+   Fine-tune the BERT model to handle text classification tasks effectively and achieve high accuracy on benchmark datasets.
 
-Optimize the fine-tuned model through distillation techniques.
+2. **Optimize Deployment through Model Distillation**  
+   Simplify the fine-tuned model using knowledge distillation techniques to improve computational efficiency while retaining high performance.
 
-Enable real-time deployment for practical usability.
+3. **Enable Real-Time Deployment**  
+   Develop and implement a real-time deployment system that allows seamless interaction with the model, ensuring it is responsive and practical for real-world use cases.
 
 ## 1.2 Project Challenges
 
