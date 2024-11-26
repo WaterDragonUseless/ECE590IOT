@@ -22,6 +22,8 @@ The primary goals of the project were as follows:
 
 ## 1.2 Project Challenges
 
+The challenges mainly come from the following 3 points.
+
 1. **Optimizing Model Fine-Tuning**  
    - Despite its strong performance across NLP tasks, BERT's extensive parameter count poses challenges in resource-constrained environments.  
    - Previous setbacks during fine-tuning for fine-grained sentiment analysis on the SST-5 dataset underscored the critical need for precise hyperparameter selection and optimizer configuration to ensure training success.
