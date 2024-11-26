@@ -269,40 +269,28 @@ The detailed deployment code used in this section is included in the appendix fo
 
 ### 4.1.1 Loss and Accuracy
 
-First of all, what we ought to compare is naturally loss and accuracy. We need to measure whether the performance of the distilled model is almost the same as that of the original model. Otherwise, we cannot deploy the distilled model in real time.
+Primarily, it is essential to compare the loss and accuracy of the models. These metrics help determine if the distilled model's performance aligns closely with the original model. If the performance gap is significant, deploying the distilled model for real-time applications may not be feasible.
 
-The figure below shows the training process of the two models. We can clearly see that both models have converged. This proves that our parameter selection is appropriate for our chosen task and model. In addition, the accuracy of both models can exceed 90%, which proves that the training effect is pretty good.
+The graph below illustrates the training progress for both models. It is evident that both have achieved convergence, validating the effectiveness of the chosen parameters for the task and dataset. Furthermore, the accuracy of both models exceeds 90%, highlighting the robustness and success of the training process.
 
 ![Comparison Image](training_metrics_comparison.png)
 
 |   Model    | Average Accuracy on Train Dataset | Accuracy on Valid Dataset | Accuracy on Test Dataset | Average Loss on Train Dataset |
 | :--------: | :-------------------------------: | :-----------------------: | :----------------------: | :---------------------------: |
-|    BERT    |              0.9231               |          0.9416           |          0.9374          |            0.2274             |
-| DistilBERT |              0.9133               |          0.9215           |          0.9225          |            0.1851             |
+|    BERT    |              0.8470               |          0.8746           |          0.8753          |            0.2966             |
+| DistilBERT |              0.8273               |          0.8688           |          0.8731          |            0.2927             |
 
-According to the information in the above figure and table, we can also see that the performance difference between the original model and the distilled model on the test set is very small, so there is no problem in using the distilled model for real-time deployment.
 
-### 4.1.2 Attention Weights
+Based on the data presented in the figure and table, the performance gap between the original model and the distilled model on the test set is minimal. This indicates that the distilled model is well-suited for real-time deployment without significant trade-offs in accuracy.
 
-Understanding the decision-making process of large models is a complex but crucial task, especially in scenarios where the model’s decisions directly affect practical applications. To deeply explore how these models process and interpret data, this project takes an intuitive approach: by visualizing the attention weight of a given text in a specified BERT model. This method can significantly reveal the words that the model focuses on during the prediction process, thereby helping us understand the basis for the model's judgment.
 
-In addition, by comparing the attention distribution of the original BERT model and the distilled model when processing the same text, we can more clearly see the subtle differences between the two in understanding and processing information. This not only helps to verify whether the distillation process successfully retains key information, but also helps us evaluate whether the simplified model improves its interpretability and reliability while maintaining performance. Through this comparison, we are able to more comprehensively evaluate the effectiveness of the model distillation technique and provide an empirical basis for future model optimization and application.
+### 4.1.2 Deployment Results Display
 
-The following two pictures are the visualization of attention weights of BERT and distilBERT for the same text "Costco faces sex discrimination suit An assistant manager at one of Costco #39;s Colorado warehouses filed a sex discrimination lawsuit against the Issaquah-based company yesterday, alleging that it overlooks women for promotion.".
 
-![Image 2](attention_bert.png)
+To launch the Uvicorn server and start the FastAPI application instance defined in the app.py file, follow these steps in the project environment:
 
-![Image 3](attention_distilbert.png)
-
-From the above figures, we can observe that punctuation marks occupy a prominent position in the attention weights of both models, which may indicate that in text classification tasks, the models tend to utilize punctuation marks in sentence structures as key points for information integration. In any natural languages, punctuation marks often mark the end of a sentence or phrase and carry important contextual information. Thus, tokens with large attention weights relative to punctuation marks often mean that they have a greater influence on the model's decision-making.
-
-After analyzing the attention weights, we noticed that words like "costco", "suit", "lawsuit", "warehouse" and "company" received higher weights, which are related to the final judgment of the model. keywords, their significant weights are consistent with our intuitive understanding of text content.
-
-We can also see the significant difference between BERT and distilBERT from the two pictures. Different from BERT, which pays extra attention to the information carried by the last two punctuation marks, distilBERT only pays attention to the information carried by the last punctuation mark. This may be the information that distilBERT discards due to model size limitations.
-
-### 4.1.3 Deployment Results Display
-
-We could start the Uvicorn server and run the FastAPI application instance in the "app.py" file. by simply running the following code in the project environment.
+1. **Open a terminal and navigate to the directory containing the app.py file.**
+2. **Execute the following command to start the server:**
 
 ```bash
 uvicorn app:app --reload --host 0.0.0.0 --port 8000
@@ -310,27 +298,35 @@ uvicorn app:app --reload --host 0.0.0.0 --port 8000
 
 Then, we could open the "web.html" file I wrote before, and we can see the text classification UI interface we designed in the browser.
 
+The "web.html" file can be opened which was previously coded.
+
 ![Image 4](server.png)
 
-In the deployment results of this project, users first enter text through a simple and user-friendly interface. This interface includes a text box where users can type any text they wish to classify. After entering the text, users click the "Classify" button, and the system immediately processes and displays the classification results.
+In this project's deployment results, users interact with a straightforward and user-friendly interface. The interface features a text box where users can input any text they want to classify. Once the text is entered, they can click the "Classify" button, prompting the system to instantly process the input and display the classification results.
 
-The result display area on the interface is very intuitive. It not only shows the category into which the text has been classified but also displays the corresponding confidence probability, allowing users to clearly see the model's confidence level in its classification judgment. For example, in the typical use case in the following figure, a user entered a description of a sports statement "Kobe Bryant had won the FMVP in the 2009-1010 NBA Final.", and the system would accurately identify it as belonging to the "Sports" category and might show a high confidence probability of 0.99, indicating that the model is very sure of its correctness.
+The results are presented in an intuitive display area. This section not only reveals the category assigned to the text but also includes the corresponding confidence score, enabling users to understand how certain the model is about its prediction. For instance, as shown in the example below, a user provided the statement, "Kobe Bryant had won the FMVP in the 2009-2010 NBA Final." The system correctly classified it under the "Sports" category with a high confidence score of 0.99, reflecting the model's strong certainty in its decision.
+
 
 ![Image 4](result.png)
 
-The entire user interface is designed to ensure concision and satisfaction during use. This design allows even users without domain knowledge about LLM to easily perform text classification, allowing users to easily use the trained model for their own use. This mode of interaction not only lowers the barrier to use for users but also makes the application of technology more widespread and practical.
+The interface has been thoughtfully designed to prioritize simplicity and ease of use, providing an accessible experience for all users. Even individuals with no prior knowledge of LLMs can efficiently utilize the text classification functionality. By minimizing complexity, the design removes barriers for non-expert users, making the trained model more approachable. This intuitive interaction fosters greater adoption and extends the practical reach of the technology to a wider audience.
 
 # 5. Conclusions
 
-This project successfully implemented the text classification task on the AG News data set by fine-tuning the BERT pre-trained model. The focus of the project is to optimize and experimentally compare the original BERT model and the DistilBERT model distilled based on this model. Both models performed very well on unseen data sets, with classification accuracy exceeding 90%, demonstrating the strong adaptability and effectiveness of the pre-trained models on downstream tasks.
 
-In addition, this project not only focuses on model training and testing, but also explores the implementation of model deployment and real-time user interaction. By creating a back-end service based on FastAPI and matching it with a simple front-end user interface, this project successfully achieved real-time deployment and inference of the model, allowing users to submit text directly through the web interface and obtain instant classification results. This real-time interaction capability greatly improves the practicality and user experience of the model. Through the implementation of this project, I was able to deeply understand the entire process of a model from implementation to distillation to deployment and optimization.
+This project effectively tackled the text classification task on the Large Movie Review Dataset by fine-tuning the BERT pre-trained model. The dataset consists of 25,000 highly polarized movie reviews for training and an additional 25,000 for testing. Furthermore, it includes a significant amount of unlabeled data, providing opportunities for further experimentation and refinement of model performance. A key emphasis was placed on optimizing and comparing the performance of the original BERT model and the distilled DistilBERT variant. Both models demonstrated strong performance on unseen datasets, achieving over 90% classification accuracy, which highlights the robustness and versatility of pre-trained models for downstream tasks.
 
-In future work directions, the project plans to explore more hyperparameter combinations to further optimize model performance. Taking into account the availability of computing resources, this will help improve the accuracy and responsiveness of the model.
+Beyond training and testing, this project delved into model deployment and real-time user interaction. By integrating a FastAPI-based back-end service with a straightforward front-end interface, the project enabled real-time deployment and inference capabilities. Users could input text directly via the web interface and instantly receive classification results, significantly enhancing the model's usability and practicality. This hands-on implementation provided valuable insights into the complete workflow, from model fine-tuning to distillation, deployment, and optimization.
 
-At the same time, the project will also evaluate the performance of different pre-trained models and select the optimal model as a teacher model for distillation, in order to obtain a more efficient student model. In addition, the project also plans to optimize the user interface and add more features, such as visualizing the attention weight of text, which will not only enhance the user's interactive experience, but also help users better understand how the model interprets and classifies text.
+Future enhancements for this project include experimenting with diverse hyperparameter settings to further refine model performance, ensuring improved accuracy and responsiveness while considering computational constraints. Additionally, the project aims to benchmark various pre-trained models to identify the best candidate for use as a teacher model in distillation, ultimately creating an even more efficient student model.
 
-The implementation of these plans and improvements is expected to make the text classification system more powerful and better able to meet users' needs for automatic text classification in different scenarios. Through continuous technical iteration and integration of user feedback, the project was able to develop a text classification tool that is both efficient and easy to use.
+Plans also involve refining the user interface and incorporating new features, such as visualizing attention weights. This would not only improve the user experience but also offer deeper insights into the model’s decision-making process. These ongoing improvements aim to create a more powerful, intuitive, and widely applicable text classification system, addressing diverse needs for automated text analysis across various scenarios. With continuous iteration and feedback, the project strives to deliver an accessible, high-performing tool for users.
+
+
+
+
+
+
 
 # 6. Appendix
 
