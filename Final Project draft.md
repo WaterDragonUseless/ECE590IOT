@@ -57,32 +57,64 @@ Next, I split the original training set of 25,000 reviews into a new training se
 The MovieReviewDataset class, as shown in the code, manages dataset loading, tokenization, and preparation of inputs. It uses the Hugging Face load\_dataset function to load the Large Movie Review Dataset and a BERT tokenizer for text tokenization. The class handles padding, truncation, and conversion of text into the required input format (input\_ids, attention\_mask, and labels). This design ensures compatibility with BERT and allows for flexible integration with data\_loader utilities to facilitate training and evaluation.
 
 ```python
-class AGNewsDataset(Dataset):
-    def __init__(self, split):
-        self.dataset = load_dataset('ag_news', split=split)
-        self.tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
-        self.max_length = 128
+class LargeMovieReviewDataset(Dataset):
+    def __init__(self, split, tokenizer_name='bert-base-uncased', max_length=128):
+        """
+        Initialize the Large Movie Review Dataset.
 
-    def __len__(self):
-        return len(self.dataset)
+        Args:
+            split (str): Split of the dataset to load ('train', 'test', etc.).
+            tokenizer_name (str): Name of the pre-trained tokenizer to use.
+            max_length (int): Maximum sequence length for tokenization.
+        """
+        self.dataset = load_dataset('imdb', split=split)
+        self.tokenizer = BertTokenizer.from_pretrained(tokenizer_name)
+        self.max_length = max_length
 
-    def __getitem__(self, idx):
-        text, label = self.dataset[idx]['text'], self.dataset[idx]['label']
-        inputs = self.tokenizer(
+    def tokenize(self, text):
+        """
+        Tokenize the input text.
+
+        Args:
+            text (str): Input text for tokenization.
+        
+        Returns:
+            dict: Tokenized representation including input IDs and attention masks.
+        """
+        return self.tokenizer(
             text,
             padding='max_length',
             truncation=True,
             max_length=self.max_length,
             return_tensors="pt"
         )
-        input_ids = inputs['input_ids'].squeeze(0)
-        attention_mask = inputs['attention_mask'].squeeze(0)
+
+    def __len__(self):
+        return len(self.dataset)
+
+    def __getitem__(self, idx):
+        """
+        Retrieve a single example from the dataset.
+
+        Args:
+            idx (int): Index of the example.
+        
+        Returns:
+            dict: Tokenized input IDs, attention mask, and label.
+        """
+        # Load text and label
+        text = self.dataset[idx]['text']
+        label = self.dataset[idx]['label']
+
+        # Tokenize text
+        inputs = self.tokenize(text)
 
         return {
-            'input_ids': input_ids,
-            'attention_mask': attention_mask,
-            'labels': torch.tensor(label)
+            'input_ids': inputs['input_ids'].squeeze(0),
+            'attention_mask': inputs['attention_mask'].squeeze(0),
+            'labels': torch.tensor(label, dtype=torch.long)
         }
+```
 
 
 ## 3.2 Selection of Hyperparameters
