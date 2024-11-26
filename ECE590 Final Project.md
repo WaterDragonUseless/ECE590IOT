@@ -1,4 +1,4 @@
-```
+
 <h1 align="center">ECE590 Final Project</h1>
 
 <h4 align="center">Zhongye Liu</h4>
@@ -79,7 +79,7 @@ class AGNewsDataset(Dataset):
             'attention_mask': attention_mask,
             'labels': torch.tensor(label)
         }
-```
+
 
 ## 3.2 Selection of Hyperparameters
 
