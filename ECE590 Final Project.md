@@ -1,7 +1,7 @@
 
 <h1 align="center">ECE590 Final Project</h1>
 
-<h4 align="center">Zhongye Liu</h4>
+<h4 align="center">Group BERT</h4>
 
 # 1. Introduction
 
