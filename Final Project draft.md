@@ -17,21 +17,20 @@ Optimize the fine-tuned model through distillation techniques.
 
 Enable real-time deployment for practical usability.
 
-## 1.2 **Project Challenges**
+### 1.2 Project Challenges
 
-Optimizing Model Fine-Tuning
+1. **Optimizing Model Fine-Tuning**  
+   - Despite its strong performance across NLP tasks, BERT's extensive parameter count poses challenges in resource-constrained environments.  
+   - Previous setbacks during fine-tuning for fine-grained sentiment analysis on the SST-5 dataset underscored the critical need for precise hyperparameter selection and optimizer configuration to ensure training success.
 
-Despite its strong performance across NLP tasks, BERT's extensive parameter count poses challenges in resource-constrained environments. Previous setbacks during fine-tuning for fine-grained sentiment analysis on the SST-5 dataset underscored the critical need for precise hyperparameter selection and optimizer configuration to ensure training success.
+2. **Streamlining Model Distillation**  
+   - To improve efficiency and reduce resource usage for real-time applications, knowledge distillation was employed.  
+   - This process transfers insights from a complex model to a simpler one, presenting challenges in devising effective distillation strategies and targets to ensure the streamlined model closely replicates the original's performance.
 
+3. **Achieving Real-Time Deployment**  
+   - Real-time deployment demands high performance in dynamic, practical environments.  
+   - Optimizing aspects such as model loading time, inference speed, and concurrent processing capabilities is crucial to achieve responsive and efficient real-world performance.
 
-Streamlining Model Distillation
-
-To improve efficiency and reduce resource usage for real-time applications, knowledge distillation was employed. This process transfers insights from a complex model to a simpler one. The challenge lies in devising effective distillation strategies and targets to ensure the streamlined model closely replicates the original's performance.
-
-
-Achieving Real-Time Deployment
-
-Real-time deployment demands that the model delivers high performance in dynamic, practical environments. This requires optimizing aspects such as model loading time, inference speed, and concurrent processing capabilities to achieve responsive and efficient real-world performance.
 
 # 2. Model and Dataset Delection
 
