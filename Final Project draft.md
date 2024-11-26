@@ -17,7 +17,7 @@ Optimize the fine-tuned model through distillation techniques.
 
 Enable real-time deployment for practical usability.
 
-### 1.2 Project Challenges
+## 1.2 Project Challenges
 
 1. **Optimizing Model Fine-Tuning**  
    - Despite its strong performance across NLP tasks, BERT's extensive parameter count poses challenges in resource-constrained environments.  
