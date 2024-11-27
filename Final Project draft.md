@@ -232,32 +232,52 @@ During the validation process, gradient computations are unnecessary, so we use 
 The validation code is as follow:
 
 ```python
-def validate(model, valid_loader, device):
+def evaluate_model(model, dataloader, device):
+    """
+    Evaluate the model's performance on a given dataset.
+
+    Args:
+        model (torch.nn.Module): The trained model to evaluate.
+        dataloader (torch.utils.data.DataLoader): Dataloader for the dataset to evaluate.
+        device (torch.device): Device to use for computation.
+
+    Returns:
+        tuple: Mean loss and mean accuracy across all batches.
+    """
+    model.to(device)
     model.eval()
-    total_accuracy = 0
-    total_loss = 0
-    total_batches = len(valid_loader)
+
+    cumulative_loss = 0.0
+    correct_predictions = 0
+    total_samples = 0
 
     with torch.no_grad():
-        for batch in tqdm(valid_loader):
-            input_ids = batch['input_ids'].to(device)
-            attention_mask = batch['attention_mask'].to(device)
-            labels = batch['labels'].to(device)
+        for data in tqdm(dataloader, desc="Evaluating Model"):
+            # Move inputs and labels to the target device
+            inputs = data['input_ids'].to(device)
+            masks = data['attention_mask'].to(device)
+            labels = data['labels'].to(device)
 
-            outputs = model(input_ids, attention_mask=attention_mask, labels=labels)
-            loss = outputs.loss
+            # Forward pass
+            output = model(inputs, attention_mask=masks, labels=labels)
+            loss = output.loss
 
-            predictions = torch.argmax(outputs.logits, dim=1)
-            accuracy = (predictions == labels).float().mean()
+            # Update cumulative loss
+            cumulative_loss += loss.item()
 
-            total_accuracy += accuracy.item()
-            total_loss += loss.item()
+            # Calculate batch accuracy
+            predictions = output.logits.argmax(dim=1)
+            correct_predictions += (predictions == labels).sum().item()
+            total_samples += labels.size(0)
 
-    average_accuracy = total_accuracy / total_batches
-    average_loss = total_loss / total_batches
-    print(f"Validation Loss: {average_loss:.4f}, Accuracy: {average_accuracy:.4f}")
+    # Compute overall metrics
+    average_loss = cumulative_loss / len(dataloader)
+    overall_accuracy = correct_predictions / total_samples
 
-    return average_loss, average_accuracy
+    print(f"Evaluation Results - Loss: {average_loss:.4f}, Accuracy: {overall_accuracy:.4f}")
+
+    return average_loss, overall_accuracy
+
 ```
 
 ## 3.4 Model Distillation
