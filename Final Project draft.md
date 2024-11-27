@@ -406,8 +406,6 @@ Plans also involve refining the user interface and incorporating new features, s
 
 # 6. Appendix
 
-## 6.1 Project Structure
-
 Below is the project directory tree for easy navigation:
 
 ```plaintext
@@ -424,5 +422,9 @@ ECE590_Final_Project/
 │   └── distilbert_epoch1.pth
 └── logs/                     # Training and validation logs
     └── training_metrics.csv
+```
+You can access the project repository, including all source code, datasets, and documentation, at the following link:
+https://github.com/WaterDragonUseless/ECE590IOT
+
 
 
