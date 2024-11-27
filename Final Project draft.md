@@ -160,48 +160,69 @@ Given the dataset's substantial size, it is feasible for the model to converge w
 The code is as follow:
 
 ```python
-for epoch in range(epochs):
-total_loss = 0
-total_accuracy = 0
-for batch_idx, batch in enumerate(tqdm(train_loader, desc=f"Training Epoch {epoch+1}/{epochs}")):
-    input_ids = batch['input_ids'].to(device)
-    attention_mask = batch['attention_mask'].to(device)
-    labels = batch['labels'].to(device)
+from torch.nn.functional import softmax
 
-    optimizer.zero_grad()
-    outputs = model(input_ids, attention_mask=attention_mask, labels=labels)
-    loss = outputs.loss
-    loss.backward()
-    optimizer.step()
+def train_model(model, train_loader, optimizer, scheduler, device, epochs, save_path='classification_model'):
+    """
+    Train the model and save the state dictionary after each epoch.
 
-    # Convert the logits to probabilities and then to the predicted classes
-    probabilities = torch.nn.functional.softmax(outputs.logits, dim=-1)
-    predictions = torch.argmax(probabilities, dim=1)
-    accuracy = (predictions == labels).float().mean()
+    Args:
+        model (nn.Module): The model to train.
+        train_loader (DataLoader): DataLoader for the training dataset.
+        optimizer (Optimizer): Optimizer for the training process.
+        scheduler (Scheduler): Learning rate scheduler.
+        device (torch.device): Device for training (CPU or GPU).
+        epochs (int): Number of training epochs.
+        save_path (str): Base path to save model checkpoints.
+    """
+    for epoch in range(epochs):
+        model.train()
+        total_loss = 0
+        total_accuracy = 0
+        print(f"Epoch {epoch+1}/{epochs}...")
 
-    total_loss += loss.item()
-    total_accuracy += accuracy.item()
+        for batch_idx, batch in enumerate(tqdm(train_loader, desc="Training")):
+            # Move data to the appropriate device
+            input_ids, attention_mask, labels = (
+                batch['input_ids'].to(device),
+                batch['attention_mask'].to(device),
+                batch['labels'].to(device),
+            )
 
-    # Record metrics for this batch
-    metrics['epoch'].append(epoch)
-    metrics['batch'].append(batch_idx)
-    metrics['train_loss'].append(loss.item())
-    metrics['train_accuracy'].append(accuracy.item())
-    metrics['learning_rate'].append(scheduler.get_last_lr()[0])
+            # Forward pass
+            optimizer.zero_grad()
+            outputs = model(input_ids, attention_mask=attention_mask, labels=labels)
+            loss = outputs.loss
 
-    # Print the loss and accuracy every 10 batches
-    if (batch_idx + 1) % 10 == 0:
-        print(f"Batch {batch_idx+1} - Loss: {loss.item():.4f}, Accuracy: {accuracy.item():.4f}")
+            # Backward pass and optimization
+            loss.backward()
+            optimizer.step()
 
-        # Update the learning rate
-        scheduler.step()
+            # Metrics calculation
+            probabilities = softmax(outputs.logits, dim=-1)
+            predictions = torch.argmax(probabilities, dim=1)
+            accuracy = (predictions == labels).float().mean()
 
-# Calculate the average loss and accuracy for this epoch
-avg_loss = total_loss / len(train_loader)
-avg_accuracy = total_accuracy / len(train_loader)
-print(f"Epoch {epoch+1} - Average Loss: {avg_loss:.4f}, Average Accuracy: {avg_accuracy:.4f}")
+            total_loss += loss.item()
+            total_accuracy += accuracy.item()
 
-torch.save(model.state_dict(), f'classification_model_e{epoch+1}.pth')
+            # Display metrics every 10 batches
+            if (batch_idx + 1) % 10 == 0:
+                print(f"Batch {batch_idx+1} - Loss: {loss.item():.4f}, Accuracy: {accuracy.item():.4f}")
+
+            # Update learning rate
+            scheduler.step()
+
+        # Epoch-level metrics
+        avg_loss = total_loss / len(train_loader)
+        avg_accuracy = total_accuracy / len(train_loader)
+        print(f"Epoch {epoch+1} - Avg Loss: {avg_loss:.4f}, Avg Accuracy: {avg_accuracy:.4f}")
+
+        # Save model checkpoint
+        torch.save(model.state_dict(), f"{save_path}_epoch{epoch+1}.pth")
+
+    print("Training complete!")
+
 ```
 
 ### 3.3.2 Validation Process
