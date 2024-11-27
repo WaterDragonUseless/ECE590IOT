@@ -404,6 +404,13 @@ Future enhancements for this project include experimenting with diverse hyperpar
 Plans also involve refining the user interface and incorporating new features, such as visualizing attention weights. This would not only improve the user experience but also offer deeper insights into the model’s decision-making process. These ongoing improvements aim to create a more powerful, intuitive, and widely applicable text classification system, addressing diverse needs for automated text analysis across various scenarios. With continuous iteration and feedback, the project strives to deliver an accessible, high-performing tool for users.
 
 
+# 6. Appendix
 
+
+## 6.1 Project Structure
+
+Below is the project directory tree for easy navigation:
+
+ECE590_Final_Project/ ├── dataset_loader.py # Dataset preprocessing and tokenization ├── train_model.py # Training script for BERT and DistilBERT ├── evaluate_model.py # Validation and evaluation scripts ├── app.py # FastAPI backend for real-time deployment ├── web.html # Frontend interface for testing ├── requirements.txt # Python dependencies ├── README.md # Project overview and instructions ├── checkpoints/ # Directory for saving model checkpoints │ ├── bert_epoch1.pth │ └── distilbert_epoch1.pth └── logs/ # Training and validation logs └── training_metrics.csv
 
 
